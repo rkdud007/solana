@@ -18,7 +18,11 @@ mod target_arch {
         type Error = Curve25519Error;
 
         fn try_from(pod: &PodScalar) -> Result<Self, Self::Error> {
-            Scalar::from_canonical_bytes(pod.0).ok_or(Curve25519Error::PodConversion)
+            if Scalar::from_canonical_bytes(pod.0).is_some().into() {
+                Ok(Scalar::from_canonical_bytes(pod.0).unwrap())
+            } else {
+                Err(Curve25519Error::PodConversion)
+            }
         }
     }
 }
